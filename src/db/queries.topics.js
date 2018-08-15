@@ -1,4 +1,5 @@
 const Topic = require("./models").Topic;
+const Post = require("./models").Post;
 
 module.exports = {
   getAllTopics(callback){
@@ -14,7 +15,12 @@ module.exports = {
   },
 
   getTopic(id, callback){
-    return Topic.findById(id)
+    return Topic.findById(id, {
+      include: [{
+        model: Post,
+        as: "posts"
+      }]
+    })
     .then((topic)=>{
       callback(null, topic);
     })
@@ -22,6 +28,18 @@ module.exports = {
       callback(err);
     })
   },
+  // setTopic not implemented in checkpoint, but it tells us to use it. Cannot figure out how to implement it properly. Would like help.
+  /*setTopic(id, callback){
+    return Topic.findById(id)
+    .then((topic)=>{
+      .then((post)=> {
+        callback(null, post);
+      })
+      .catch((err)=>{
+        callback(err);
+      })
+    });
+  },*/
 
   addTopic(newTopic,callback){
     return Topic.create({
