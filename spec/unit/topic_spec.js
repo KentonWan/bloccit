@@ -1,33 +1,43 @@
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
+const User = require("../../src/db/models").User;
 
 describe("Topic", () => {
 
   beforeEach((done)=> {
     this.topic;
     this.post;
-    sequelize.sync({force: true}).then((res)=> {
-      Topic.create({
-        title: "Post Resources Assignment",
-        description: "create a test file with test for create and getPosts methods",
-        })
-        .then((topic)=>{
-          this.topic=topic;
+    this.User
 
-          Post.create({
-            title: "Not sure what I'm doing",
-            body: "I'm just attempting random stuff",
-            topicId: this.topic.id,
+    sequelize.sync({force: true}).then((res)=> {
+
+      User.create({
+        email:"starman@tesla.com",
+        password: "Trekkie4lyfe"
+      })
+      .then((user)=> {
+        this.user = user;
+      
+        Topic.create({
+          title: "Expeditions to Alpha Centauri",
+          description: "A compilation of reports from recent visits to the star system.",
+          posts: [{
+            title: "My first visit to Proxima Centauri b",
+            body: "I saw some rocks",
+            userId: this.user.id
+          }]
+          }, {
+            include: {
+              model: Post,
+              as: "posts"
+            }
           })
-          .then((post)=>{
-            this.post = post;
+          .then((topic)=>{
+            this.topic=topic;
+            this.post= topic.posts[0];
             done();
           });
-        })
-        .catch((err)=>{
-          console.log(err);
-          done();
         });
       });
     });
@@ -54,7 +64,7 @@ describe("Topic", () => {
     it("should get all the posts associated with chosen topic", (done)=>{
       this.topic.getPosts()
       .then((associatedPosts)=>{
-        expect(associatedPosts[0].title).toBe("Not sure what I'm doing");
+        expect(associatedPosts[0].title).toBe("My first visit to Proxima Centauri b");
         done();
       });
     });
