@@ -313,7 +313,7 @@ describe("routes : topics", () => {
           request.get(`${base}${this.topic.id}/edit`, (err, res, body) => {
             expect(err).toBeNull();
             expect(body).not.toContain("Edit Topic");
-            expect(res.statusCode).toBe(404);
+            expect(body).toContain("JS Frameworks");
             done();
           });
         });
