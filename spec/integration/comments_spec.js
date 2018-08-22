@@ -125,20 +125,172 @@ describe("routes : comments", () => {
                        expect(comments.length).toBe(commentCountBeforeDelete);
                        done();
                      })
-        
                    });
+                 })
+                 .catch((err)=> {
+                   console.log(err);
+                   done();
                  })
                });
              });
            });
 
-    describe("signed in user performing CRUD actions for Comment", () => {
+    describe("signed in user and not owner of comment performing CRUD actions for Comment", () => {
 
         beforeEach((done) => {    
           request.get({           
             url: "http://localhost:3000/auth/fake",
             form: {
               role: "member",    
+              userId: 2
+            }
+          },
+            (err, res, body) => {
+              done();
+            }
+          );
+        });
+   
+        describe("POST /topics/:topicId/posts/:postId/comments/create", () => {
+   
+          it("should create a new comment and redirect", (done) => {
+            const options = {
+              url: `${base}${this.topic.id}/posts/${this.post.id}/comments/create`,
+              form: {
+                userId: this.user.id,
+                body: "This comment is amazing!"
+              }
+            };
+            request.post(options,
+              (err, res, body) => {
+                Comment.findOne({where: {body: "This comment is amazing!"}})
+                .then((comment) => {
+                  expect(comment).not.toBeNull();
+                  expect(comment.body).toBe("This comment is amazing!");
+                  expect(comment.id).not.toBeNull();
+                  done();
+                })
+                .catch((err) => {
+                  console.log(err);
+                  done();
+                });
+              }
+            );
+          });
+        });
+   
+        describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+        
+          it("should NOT delete the comment with the associated ID they are not owner of", (done) => {
+            Comment.all()
+            .then((comments) => {
+              const commentCountBeforeDelete = comments.length;
+   
+              expect(commentCountBeforeDelete).toBe(1);
+   
+              request.post(
+                `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+                (err, res, body) => {
+                Comment.all()
+                .then((comments) => {
+                  expect(err).toBeNull();
+                  expect(comments.length).toBe(commentCountBeforeDelete);
+                  done();
+                })
+   
+              });
+            })
+            .catch((err)=> {
+              console.log(err);
+              done();
+            })
+          });
+        });
+   
+      }); // end of member
+
+      describe("signed in user and owner of comment performing CRUD actions for Comment", () => {
+
+        beforeEach((done) => {    
+          request.get({           
+            url: "http://localhost:3000/auth/fake",
+            form: {
+              role: "member",    
+              userId: this.user.id
+            }
+          },
+            (err, res, body) => {
+              done();
+            }
+          );
+        });
+   
+        describe("POST /topics/:topicId/posts/:postId/comments/create", () => {
+   
+          it("should create a new comment and redirect", (done) => {
+            const options = {
+              url: `${base}${this.topic.id}/posts/${this.post.id}/comments/create`,
+              form: {
+                body: "This comment is amazing!"
+              }
+            };
+            request.post(options,
+              (err, res, body) => {
+                Comment.findOne({where: {body: "This comment is amazing!"}})
+                .then((comment) => {
+                  expect(comment).not.toBeNull();
+                  expect(comment.body).toBe("This comment is amazing!");
+                  expect(comment.id).not.toBeNull();
+                  done();
+                })
+                .catch((err) => {
+                  console.log(err);
+                  done();
+                });
+              }
+            );
+          });
+        });
+   
+        describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+   
+          it("should delete the comment with the associated ID they are owner of", (done) => {
+            Comment.all()
+            .then((comments) => {
+              const commentCountBeforeDelete = comments.length;
+   
+              expect(commentCountBeforeDelete).toBe(1);
+   
+              request.post(
+               `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+                (err, res, body) => {
+                expect(res.statusCode).toBe(302);
+                Comment.all()
+                .then((comments) => {
+                  expect(err).toBeNull();
+                  expect(comments.length).toBe(commentCountBeforeDelete - 1);
+                  done();
+                })
+   
+              });
+            })
+   
+          });
+   
+        });
+   
+      }); // end of member
+
+  
+
+
+      describe("admin user performing CRUD actions for Comment", () => { //admin
+
+        beforeEach((done) => {    
+          request.get({           
+            url: "http://localhost:3000/auth/fake",
+            form: {
+              role: "admin",    
               userId: this.user.id
             }
           },

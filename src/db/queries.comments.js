@@ -19,16 +19,18 @@ module.exports = {
     deleteComment(req, callback){
         return Comment.findById(req.params.id)
         .then((comment) => {
-            const authorized = new Authorizer(req.user, comment).destroy();
-
-            if(authorized) {
-                comment.destroy();
+          const authorized = new Authorizer(req.user, comment).destroy();
+    
+          if(authorized){
+            comment.destroy()
+            .then((res)=> {
                 callback(null, comment)
-            } else {
-                req.flash("notice", "You are not authorized to do that.");
-                callback(401);
-            }
-        });
-    },
+            });
+          } else {
+            req.flash("notice", "You are not authorized to do that.");
+            callback(401)
+          }
+        })
+      },
 
 }
