@@ -15,7 +15,7 @@ module.exports = {
     app.use(express.static(path.join(__dirname,"..","assets")));
     app.use(expressValidator());
     app.use(session({
-      secret: "do not let this get checked into version control",
+      secret: process.env.cookieSecret,
       resave: false,
       saveUninitialized: false,
       cookie: { maxAge: 1.21e+9 }
