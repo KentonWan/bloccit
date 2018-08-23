@@ -54,6 +54,20 @@ module.exports = (sequelize, DataTypes) => {
           .map((v) => { return v.value })
           .reduce((prev, next) => { return prev + next });
       };
+  Post.prototype.hasUpvoteFor = function (chosenUser) {
+
+      this.votes.findOne({
+      where: {
+        userId: chosenUser
+      }
+    })
+    .then((vote)=> {
+      if(vote){
+        return true
+      }
+    })
+
+  };
    
 
   return Post;

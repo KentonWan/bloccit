@@ -117,6 +117,24 @@ describe("Vote", () => {
                 done();
             })
         });
+        
+        //Create a vote with a value of anything other than 1 or -1. This scenario should not be successful.
+        it("should NOT create an upvote with value other than -1 or 1 ", (done)=> {
+            Vote.create({
+                value: 2,
+                userId: this.user.id,
+                postId: this.post.id
+               
+            })
+            .then((vote) => {
+
+                done();
+            })
+            .catch((err) => {
+                expect(err.message).toContain("Validation error");
+                done();
+            })
+        });
     });
 
     describe("#setUser()", () => {
@@ -163,7 +181,7 @@ describe("Vote", () => {
               .then((vote) => {
                 vote.getUser()
                 .then((user) => {
-                  expect(user.id).toBe(this.user.id); // ensure the right user is returned
+                  expect(user.id).toBe(this.user.id); 
                   done();
                 })
               })
@@ -232,4 +250,64 @@ describe("Vote", () => {
         });
    
       });
-})
+
+      //Write a test for a method called hasUpvoteFor(). We will call this method on 
+      //a Post object with userId as an argument. It returns true if the user with the 
+      //matching userId has an upvote for the post. Implement the method.
+      describe("#hasUpvoteFor()", () => {
+
+        it("should return true if user has an upvote for the post", (done) => {
+            this.comment.getPost()
+            .then((post) => {
+                this.post = post;
+
+                Vote.create({
+                    value: 1,
+                    userId: this.user.id,
+                    postId: post.id 
+                })
+                .then((vote) => {
+                    this.post.hasUpvoteFor(this.user.id)
+                    .then((res)=> {
+                        expect(res).toBeTruthy();
+                        done();
+                    })
+                });
+            })
+            .catch((err)=> {
+                console.log(err);
+                done();
+            });
+
+        });
+    });
+
+    // Write a test for a method called hasDownvoteFor(). We will call this method on a Post object with userId 
+    // as an argument. It returns true if the user with the matching userId has a downvote for the post. Implement 
+    // the method.
+    describe("#hasDownvoteFor()", () => {
+
+        it("should return true if user has a downvote for the post", (done) => {
+            this.comment.getPost()
+            .then((post) => {
+                this.post = post;
+
+                Vote.create({
+                    value: -1,
+                    userId: this.user.id,
+                    postId: post.id 
+                })
+                .then((vote) => {
+                    expect(vote.userId).toBe(this.user.id)
+                    done();
+                });
+            })
+            .catch((err)=> {
+                console.log(err);
+                done();
+            });
+
+        });
+    });
+
+});
