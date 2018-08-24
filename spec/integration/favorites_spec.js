@@ -125,7 +125,7 @@ describe("routes : favorites", () => {
                     }
                   })
                   .then((favorite) => {  
-                console.log(favorite);
+                console.log(favorite); // logs perfect
                     expect(favorite).not.toBeNull();
                     expect(favorite.userId).toBe(this.user.id);
                     expect(favorite.postId).toBe(this.post.id);
@@ -145,7 +145,7 @@ describe("routes : favorites", () => {
             const options = {
                 url: `${base}${this.topic.id}/posts/${this.post.id}/favorites/create`
                 };
-                request.post(options,
+                request.post(options, // is this redundant? And the favorite created above is still there and I just need to call it
                 (err, res, body) => {
                     Favorite.findOne({
                         where: {
@@ -154,7 +154,7 @@ describe("routes : favorites", () => {
                         }
                         })
                     .then((favorite) => {
-                        console.log(favorite);
+                        console.log(favorite); // logs to null
                     expect(favorite.id).toBe(1);
                     request.post(`${base}/${this.topic.id}/posts/${this.post.id}/favorites/${favorite.id}/destroy`, (err,res,body)=>{
                         Favorite.findById(1)
