@@ -124,7 +124,8 @@ describe("routes : favorites", () => {
                       postId: this.post.id
                     }
                   })
-                  .then((favorite) => {               
+                  .then((favorite) => {  
+                console.log(favorite);
                     expect(favorite).not.toBeNull();
                     expect(favorite.userId).toBe(this.user.id);
                     expect(favorite.postId).toBe(this.post.id);
@@ -139,50 +140,38 @@ describe("routes : favorites", () => {
             });
           });
 
-        describe("POST /topics/:topicId/posts/:postId/favorites/:id/destroy", () => {
-
-            it("should destroy a favorite", (done) => {
-                const options = {
-                    url: `${base}${this.topic.id}/posts/${this.post.id}/favorites/create`,
-                    form: {
-                        userId: this.user.id,
-                        postId: this.post.id
-                    }
-                  };
-         
-                  let favCountBeforeDelete;
-         
-                  request.post(options, (err, res, body) => {
-                    this.post.getFavorites()
-                    .then((favorites) => {
-                      const favorite = favorites[0];
-                      console.log(favorites[0]);
-                      favCountBeforeDelete = favorites.length;
-                      console.log(favCountBeforeDelete);
-         
-                      request.post(`${base}${this.topic.id}/posts/${this.post.id}/favorites/${favorite.id}/destroy`,
-                        (err, res, body) => {
-                          this.post.getFavorites()
-                          .then((favorites) => {
-                            expect(favorites.length).toBe(favCountBeforeDelete - 1);
+        describe("POST /topics/:topicId/posts/:postId/favorites/:favorite.id/destroy", () => {
+        it("should destroy a favorite", (done) => {
+            const options = {
+                url: `${base}${this.topic.id}/posts/${this.post.id}/favorites/create`
+                };
+                request.post(options,
+                (err, res, body) => {
+                    Favorite.findOne({
+                        where: {
+                            userId: this.user.id,
+                            postId: this.post.id
+                        }
+                        })
+                    .then((favorite) => {
+                        console.log(favorite);
+                    expect(favorite.id).toBe(1);
+                    request.post(`${base}/${this.topic.id}/posts/${this.post.id}/favorites/${favorite.id}/destroy`, (err,res,body)=>{
+                        Favorite.findById(1)
+                            .then((favorite)=>{
+                            expect(err).toBeNull();
+                            expect(favorite).toBeNull();
                             done();
-                          })
-                          .catch((err)=> {
-                              console.log(err);
-                              done();
-                          })
-                        });
                     })
-                    .catch((err)=> {
-                        console.log(err);
-                        done();
-                    })
-                });
             
+             })
+           });
+         });
         });
 
-    });
 
-});
+     });
+    });
+       
 
 }); 
