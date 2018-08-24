@@ -22,7 +22,7 @@ module.exports = {
     deleteFavorite(req, callback){
         const id = req.params.id;
 
-        return Favorites.findById(id)
+        return Favorite.findById(id)
         .then((favorite) => {
             if(!favorite) {
                 return callback("Favorite not found")

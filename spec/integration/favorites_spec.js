@@ -125,7 +125,6 @@ describe("routes : favorites", () => {
                     }
                   })
                   .then((favorite) => {  
-                console.log(favorite); // logs perfect
                     expect(favorite).not.toBeNull();
                     expect(favorite.userId).toBe(this.user.id);
                     expect(favorite.postId).toBe(this.post.id);
@@ -140,37 +139,48 @@ describe("routes : favorites", () => {
             });
           });
 
-        describe("POST /topics/:topicId/posts/:postId/favorites/:favorite.id/destroy", () => {
+        describe("POST /topics/:topicId/posts/:postId/favorites/:id/destroy", () => {
         it("should destroy a favorite", (done) => {
+
+            let favCountBeforeDelete;
             const options = {
                 url: `${base}${this.topic.id}/posts/${this.post.id}/favorites/create`
-                };
-                request.post(options, // is this redundant? And the favorite created above is still there and I just need to call it
-                (err, res, body) => {
-                    Favorite.findOne({
-                        where: {
-                            userId: this.user.id,
-                            postId: this.post.id
-                        }
-                        })
-                    .then((favorite) => {
-                        console.log(favorite); // logs to null
-                    expect(favorite.id).toBe(1);
-                    request.post(`${base}/${this.topic.id}/posts/${this.post.id}/favorites/${favorite.id}/destroy`, (err,res,body)=>{
-                        Favorite.findById(1)
-                            .then((favorite)=>{
-                            expect(err).toBeNull();
-                            expect(favorite).toBeNull();
-                            done();
-                    })
+              };
             
-             })
-           });
-         });
+            Post.create({
+                title: "I hate coding",
+                body: "I spend hours debugging",
+                userId: this.user.id,
+                topicId: this.topic.id
+            })
+            .then((post)=> {
+                this.post = post;
+
+                request.post(`${base}${this.topic.id}/posts/${this.post.id}/favorites/create`,
+            (err, res, body)=> {
+                this.post.getFavorites()
+                .then((favorites) => {
+                    const favorite = favorites[0];
+                    console.log(favorite);
+                    favCountBeforeDelete = favorites.length;
+
+                    request.post(`${base}${this.topic.id}/posts/${this.post.id}/favorites/${favorite.id}/destroy`,
+                (err, res, body) => {
+                    this.post.getFavorites()
+                    .then((favorites) => {
+                        expect(favorites.length).toBe(favCountBeforeDelete -1);
+                        done();
+                    })
+                })
+                })
+            })
+            })
         });
 
 
      });
+
+
     });
        
 
