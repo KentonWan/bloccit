@@ -64,6 +64,70 @@ describe("Vote", () => {
 
     describe("#create()", () => {
 
+        //Create more than one vote per user for a given post. This scenario should not be successful.
+        it("should not create two upvotes for a user on the same post", (done) => {
+            
+            this.comment.getPost()
+            .then((post) => {
+                this.post = post;
+                
+                Vote.create({
+                    value: 1,
+                    postId: this.post.id,
+                    userId: this.user.id
+                })
+                .then((vote)=> {
+
+                    Vote.create({
+                        value: 1,
+                        postId: this.post.id,
+                        userId: this.user.id
+                    })
+                    .then((secondVote) => {
+
+                        done();
+                    })
+                    .catch((err) => {
+
+                        expect(err.message).toContain("Validation error");
+                        done();
+                    })
+                });
+            });
+        });
+
+        //Create more than one vote per user for a given post. This scenario should not be successful.
+        it("should not create two downvotes for a user on the same post", (done) => {
+            
+            this.comment.getPost()
+            .then((post) => {
+                this.post = post;
+                
+                Vote.create({
+                    value: -1,
+                    postId: this.post.id,
+                    userId: this.user.id
+                })
+                .then((vote)=> {
+
+                    Vote.create({
+                        value: -1,
+                        postId: this.post.id,
+                        userId: this.user.id
+                    })
+                    .then((secondVote) => {
+
+                        done();
+                    })
+                    .catch((err) => {
+
+                        expect(err.message).toContain("Validation error");
+                        done();
+                    })
+                });
+            });
+        });
+
         it("should create an upvote on a post for a user", (done) => {
 
             Vote.create({
@@ -256,58 +320,96 @@ describe("Vote", () => {
       //matching userId has an upvote for the post. Implement the method.
       describe("#hasUpvoteFor()", () => {
 
+        
         it("should return true if user has an upvote for the post", (done) => {
-            this.comment.getPost()
-            .then((post) => {
-                this.post = post;
-
-                Vote.create({
+            Post.create({
+                title: "My first visit to Proxima Centauri b",
+                body: "I saw some rocks.",
+                userId: this.user.id,
+                votes: [{
                     value: 1,
                     userId: this.user.id,
-                    postId: post.id 
+                    postId: this.post.id
+                }]
+            }, {
+                include: {
+                    model: Vote,
+                    as: "votes"
+                }
                 })
-                .then((vote) => {
-                    this.post.hasUpvoteFor(this.user.id)
-                    .then((res)=> {
-                        expect(res).toBeTruthy();
-                        done();
-                    })
-                });
-            })
-            .catch((err)=> {
-                console.log(err);
-                done();
+                .then((post) => {
+
+                    expect(this.post.hasUpvoteFor(this.user.id)).toBe(true);
+                    done();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    done();
+                })
             });
-
         });
-    });
+    
 
-    // Write a test for a method called hasDownvoteFor(). We will call this method on a Post object with userId 
-    // as an argument. It returns true if the user with the matching userId has a downvote for the post. Implement 
-    // the method.
-    describe("#hasDownvoteFor()", () => {
+        describe("#hasDownvoteFor()", () => {
 
-        it("should return true if user has a downvote for the post", (done) => {
-            this.comment.getPost()
-            .then((post) => {
-                this.post = post;
-
-                Vote.create({
+            it("should return true if user has an downvote for the post", (done) => {
+            Post.create({
+                title: "My first visit to Proxima Centauri b",
+                body: "I saw some rocks.",
+                userId: this.user.id,
+                votes: [{
                     value: -1,
                     userId: this.user.id,
-                    postId: post.id 
+                    postId: this.post.id
+                }]
+            }, {
+                include: {
+                    model: Vote,
+                    as: "votes"
+                }
                 })
-                .then((vote) => {
-                    expect(vote.userId).toBe(this.user.id)
+                .then((post) => {
+
+                    expect(this.post.hasDownvoteFor(this.user.id)).toBe(true);
+                    done();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    done();
+                })
+            });
+      });
+
+         
+    describe("#getPoints()", () => {
+
+        it("should return the number of points on a post", (done) => {
+             Post.create({
+                title: "My first visit to Proxima Centauri b",
+                body: "I saw some rocks.",
+                userId: this.user.id,
+                votes: [{
+                    value: -1,
+                    userId: this.user.id,
+                    postId: this.post.id
+                }]
+            }, {
+                include: {
+                    model: Vote,
+                    as: "votes"
+                }
+                })
+                .then((post) => {
+                    this.post.getPoints()
+                    .then((points)=> {
+                        expect(points).toBe(1);
+                        done();
+                    })
+                })
+                .catch((err)=> {
+                    console.log(err);
                     done();
                 });
-            })
-            .catch((err)=> {
-                console.log(err);
-                done();
-            });
-
+            })   
         });
-    });
-
 });

@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   var Post = sequelize.define('Post', {
     title: {
@@ -54,20 +55,42 @@ module.exports = (sequelize, DataTypes) => {
           .map((v) => { return v.value })
           .reduce((prev, next) => { return prev + next });
       };
-  Post.prototype.hasUpvoteFor = function (chosenUser) {
 
-      this.votes.findOne({
+  Post.prototype.hasUpvoteFor = function (chosenUserId) {
+
+    if(!this.vote) return false;
+    this.votes.findOne({
       where: {
-        userId: chosenUser
+        userId: chosenUserId,
+        value: 1
       }
     })
-    .then((vote)=> {
-      if(vote){
+    .then((newVote) => {
+      if(newVote) {
         return true
       }
     })
-
   };
+
+  Post.prototype.hasDownvoteFor = function (chosenUserId) {
+
+    if(!this.vote) return false;
+    this.votes.findOne({
+      where: {
+        userId: chosenUserId,
+        value: -1
+      }
+    })
+    .then((newVote) => {
+      if(newVote) {
+        return true
+      }
+    })
+ 
+  };
+  
+  
+
    
 
   return Post;

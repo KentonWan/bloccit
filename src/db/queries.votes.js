@@ -4,6 +4,7 @@ const User = require("./models").User;
 const Vote = require("./models").Vote;
 
 module.exports = {
+  
   createVote(req, val, callback){
 
     return Vote.findOne({
