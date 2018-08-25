@@ -2,11 +2,11 @@ const request = require("request");
 const server = require("../../src/server");
 const base = "http://localhost:3000/users/";
 const User = require("../../src/db/models").User;
-const Topic = require("../../src/db/modesl").Topic;
+const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
 const Comment = require("../../src/db/models").Comment;
-const sequelize = require("../../src/db/models/index").sequelize;
 
+const sequelize = require("../../src/db/models/index").sequelize;
 
 describe("routes : users", () => {
 
@@ -65,29 +65,28 @@ describe("routes : users", () => {
           );
         });
 
-
-      it("should not a create a new user with invalid attributes and redirect", (done) => {
-        request.post(
-          {
-            url: base,
-            form: {
-              email: "no",
-              password: "123456789"
-            }
-          },
-          (err, res, body)=> {
-            User.findOne({where: {email: "no"}})
-            .then((user) => {
-              expect(user).toBeNull();
-              done();
-            })
-            .catch((err) => {
-              console.log(err);
-              done();
+        it("should not a create a new user with invalid attributes and redirect", (done) => {
+          request.post(
+            {
+              url: base,
+              form: {
+                email: "no",
+                password: "123456789"
+              }
+            },
+            (err, res, body)=> {
+              User.findOne({where: {email: "no"}})
+              .then((user) => {
+                expect(user).toBeNull();
+                done();
+              })
+              .catch((err) => {
+                console.log(err);
+                done();
+              });
             });
-          });
+        });
       });
-  });
 
   describe("GET /users/sign_in", () => {
     it("should render a view with a sign in form", (done)=>{
@@ -102,18 +101,18 @@ describe("routes : users", () => {
   describe("GET /users/:id", () => {
 
     beforeEach((done) => {
-  
+// #3
       this.user;
       this.post;
       this.comment;
-  
+
       User.create({
         email: "starman@tesla.com",
         password: "Trekkie4lyfe"
       })
       .then((res) => {
         this.user = res;
-  
+
         Topic.create({
           title: "Winter Games",
           description: "Post your Winter Games stories.",
@@ -130,7 +129,7 @@ describe("routes : users", () => {
         })
         .then((res) => {
           this.post = res.posts[0];
-  
+
           Comment.create({
             body: "This comment is alright.",
             postId: this.post.id,
@@ -142,18 +141,22 @@ describe("routes : users", () => {
           })
         })
       })
+
     });
-  
+
+// #4
     it("should present a list of comments and posts a user has created", (done) => {
-  
+
       request.get(`${base}${this.user.id}`, (err, res, body) => {
-  
+
+// #5
         expect(body).toContain("Snowball Fighting");
-        expect(body).toContain("This comment is alright");
+        expect(body).toContain("This comment is alright.")
         done();
       });
+
     });
-  
-  
-   });
+  });
+
+
 });
