@@ -50,8 +50,16 @@ module.exports = (sequelize, DataTypes) => {
       as: "favorites"
     });
 
-    Post.afterCreate((post, callback) => {
+    Post.afterCreate((post, callback) => { // automatically favorites new post created
       return models.Favorite.create({
+        userId: post.userId,
+        postId: post.id
+      });
+    });
+
+    Post.afterCreate((post, callback) => { //creates automatic upvote with new post
+      return models.Vote.create({
+        value: 1,
         userId: post.userId,
         postId: post.id
       });

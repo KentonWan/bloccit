@@ -140,42 +140,43 @@ describe("routes : favorites", () => {
           });
 
         describe("POST /topics/:topicId/posts/:postId/favorites/:id/destroy", () => {
-        it("should destroy a favorite", (done) => {
-
-            let favCountBeforeDelete;
-            const options = {
-                url: `${base}${this.topic.id}/posts/${this.post.id}/favorites/create`
-              };
             
-            Post.create({
-                title: "I hate coding",
-                body: "I spend hours debugging",
-                userId: this.user.id,
-                topicId: this.topic.id
-            })
-            .then((post)=> {
-                this.post = post;
+            it("should destroy a favorite", (done) => {
 
-                request.post(`${base}${this.topic.id}/posts/${this.post.id}/favorites/create`,
-            (err, res, body)=> {
-                this.post.getFavorites()
-                .then((favorites) => {
-                    const favorite = favorites[0];
-                    console.log(favorite);
-                    favCountBeforeDelete = favorites.length;
+                let favCountBeforeDelete;
+                const options = {
+                    url: `${base}${this.topic.id}/posts/${this.post.id}/favorites/create`
+                };
+                
+                Post.create({
+                    title: "I hate coding",
+                    body: "I spend hours debugging",
+                    userId: this.user.id,
+                    topicId: this.topic.id
+                })
+                .then((post)=> {
+                    this.post = post;
 
-                    request.post(`${base}${this.topic.id}/posts/${this.post.id}/favorites/${favorite.id}/destroy`,
-                (err, res, body) => {
+                    request.post(`${base}${this.topic.id}/posts/${this.post.id}/favorites/create`,
+                (err, res, body)=> {
                     this.post.getFavorites()
                     .then((favorites) => {
-                        expect(favorites.length).toBe(favCountBeforeDelete -1);
-                        done();
+                        const favorite = favorites[0];
+                        console.log(favorite);
+                        favCountBeforeDelete = favorites.length;
+
+                        request.post(`${base}${this.topic.id}/posts/${this.post.id}/favorites/${favorite.id}/destroy`,
+                    (err, res, body) => {
+                        this.post.getFavorites()
+                        .then((favorites) => {
+                            expect(favorites.length).toBe(favCountBeforeDelete -1);
+                            done();
+                        })
                     })
                 })
-                })
             })
-            })
-        });
+        })
+    });
 
 
      });
