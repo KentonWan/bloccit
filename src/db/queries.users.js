@@ -43,7 +43,7 @@ module.exports = {
     
                result["comments"] = comments;
 
-               Favorite.scope({medthod: ["favoritedPosts", id]}).all()
+               Favorite.scope({method: ["favoritedPosts", id]}).all()
                .then((favorites) => {
 
                 result["favorites"] = favorites;

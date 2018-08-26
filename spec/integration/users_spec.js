@@ -142,9 +142,10 @@ describe("routes : users", () => {
           .then((res) => {
             this.comment = res;
             done();
-          })
-        })
-      })
+
+          });
+        });
+      });
 
     });
 
@@ -165,6 +166,7 @@ describe("routes : users", () => {
       const options = {
         url: `http://localhost:3000/topics/${this.topic.id}/posts/${this.post.id}/favorites/create`
       };
+
       request.post(options,
         (err, res, body) => {
           Favorite.findOne({
