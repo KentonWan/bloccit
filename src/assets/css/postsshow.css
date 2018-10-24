@@ -38,10 +38,18 @@
 
 }
 
+.favoriteBtn:hover {
+    background-color: #003380;
+}
+
 .unfavoriteBtn {
     background-color: #8b0000;
     color: white;
 
+}
+
+.unfavoriteBtn:hover {
+    background-color: #720101;
 }
 
 .vote {
