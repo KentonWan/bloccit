@@ -1,0 +1,18 @@
+a.topics:hover {
+    text-decoration: none;
+    font-weight: 500;
+    color: #003366;
+}
+
+.topics {
+    color: black;
+}
+
+.header {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+li:nth-child(even) {
+    background-color: #f2f2f2;
+}

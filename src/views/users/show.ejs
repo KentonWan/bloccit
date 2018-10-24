@@ -2,6 +2,7 @@
 <html>
   <head>
     <% include ../static/partials/head.ejs %>
+    <link rel="stylesheet" href="/css/profile.css">
   </head>
   <body>
 
@@ -12,11 +13,11 @@
       <% include ../static/partials/messages.ejs %>
 
 
-      <h1><%= `${user.email}'s profile` %></h1>
+      <h2 class="userName"><%= `${user.email}'s profile` %></h2>
 
       <hr>
 
-      <h2> Latest Posts</h2>
+      <h3 class="postsHeader"> Latest Posts</h3>
 
       <ul class="list-unstyled">
 
@@ -25,7 +26,7 @@
           <% posts.forEach((post) => { %>
  
             <li>
-              <a href="/topics/<%= post.topicId %>/posts/<%= post.id %>">
+              <a href="/topics/<%= post.topicId %>/posts/<%= post.id %>" class="posts">
                 <%= post.title %>
               </a>
             </li>
@@ -34,7 +35,7 @@
       </ul>
       <hr>
 
-      <h2> Latest Comments</h2>
+      <h3 class="commentsHeader"> Latest Comments</h3>
 
       <ul class="list-unstyled">
 
@@ -44,10 +45,10 @@
 
 
             <li>
-              <span>Post: </span><a href="/topics/<%= comment.Post.topicId %>/posts/<%= comment.Post.id %>">
+              <span class="italics">Post: </span><a href="/topics/<%= comment.Post.topicId %>/posts/<%= comment.Post.id %>" class="comments">
                 <%= comment.Post.title %>
               </a>
-              <p>Comment: <%= comment.body %></p>
+              <p><span class="italics">Comment:</span> <%= comment.body %></p>
             </li>
             <hr>
           <% }) %>

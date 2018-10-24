@@ -2,6 +2,7 @@
 <html>
   <head>
     <% include ../static/partials/head.ejs %>
+    <link rel="stylesheet" href="/css/postsshow.css">
   </head>
   <body>
     <% include ../static/partials/navbar.ejs %>
@@ -9,11 +10,11 @@
     <main class="container">
       <% include ../static/partials/messages.ejs %>
 
-      <div style="display: flex; align-items:center;">
+      <div style="display: flex; align-items:center;" class="postTitle">
         <% if(currentUser) { %>
           <% include ../votes/voting.ejs %>
         <% } %>
-          <h1><%= post.title %></h1>
+          <h2><%= post.title %></h2>
         </div>
       <% if(currentUser.isAdmin() || currentUser.isOwner()) { %>
         <a href="/topics/<%= post.topicId %>/posts/<%= post.id %>/edit" class="btn btn-warning">Edit</a>
@@ -21,10 +22,12 @@
           <button type="submit" class="btn btn-danger">Delete</button>
         </form>
       <% } %>
-    
-      <% if(currentUser) { %>
-        <% include ../favorites/favoriting.ejs %>
-      <% } %>
+      
+      <div class="favorite">
+        <% if(currentUser) { %>
+          <% include ../favorites/favoriting.ejs %>
+        <% } %>
+      </div>
       
       <p><%= post.body %></p>
 

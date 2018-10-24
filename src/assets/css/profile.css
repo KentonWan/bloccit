@@ -1,0 +1,39 @@
+.userName {
+    margin-top: 0.75em;
+}
+
+.postsHeader {
+    color: #003366;
+}
+
+.commentsHeader {
+    color: #8b0000;
+}
+
+.posts {
+    color: black;
+}
+
+a.posts:hover {
+    color: black;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.comments {
+    color: black;
+}
+
+a.comments:hover {
+    color: black;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+li {
+    color: black;
+}
+
+.italics {
+    font-style: italic;
+}

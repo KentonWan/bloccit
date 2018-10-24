@@ -1,0 +1,55 @@
+.favorite {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.postTitle {
+    margin-top: 1.25em;;
+}
+
+.commentBtn {
+    background-color: #006400 ;
+    color: white;
+}
+
+.commentBtn:hover {
+    color: white;
+    background-color:#004b00;
+}
+
+.commentBody {
+    font-size: 0.75em;
+    margin-bottom: 0;
+}
+
+.commentTag {
+    font-size: 0.5em;
+}
+
+.commentDelete {
+    font-size:0.5em;
+}
+
+.favoriteBtn {
+    background-color: #003366;
+    color: white;
+    border-color: #003366;
+    border-radius: 3px;
+
+}
+
+.unfavoriteBtn {
+    background-color: #8b0000;
+    color: white;
+
+}
+
+.vote {
+    color: #003366;
+}
+
+a.vote:hover {
+    color: #4682b4;
+    text-decoration: none;
+}
+

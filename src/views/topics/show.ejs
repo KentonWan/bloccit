@@ -2,14 +2,16 @@
 <html>
   <head>
     <% include ../static/partials/head.ejs %>
+    <link rel="stylesheet" href="/css/show.css">
+
   </head>
   <body>
     <% include ../static/partials/navbar.ejs %>
 
     <main class="container">
-      <h1><%= topic.title %></h1>
+      <h1 class="topic-title"><%= topic.title %></h1>
       <% if(currentUser) { %>
-        <a href="/topics/<%= topic.id %>/posts/new" class="btn btn-success">New Post</a>
+        <a href="/topics/<%= topic.id %>/posts/new" class="btn newPost">New Post</a>
         <% if(currentUser.isAdmin()) { %>
           <a href="/topics/<%= topic.id %>/edit" class="btn btn-warning">Edit</a>
           <form style="display:initial" action="/topics/<%= topic.id %>/destroy" method="post">
@@ -19,15 +21,15 @@
       <%  } %>
   
 
-      <p><%= topic.description %></p>
+      <p><strong>Description: </strong><%= topic.description %></p>
       <hr>
 
-      <h1>Posts</h1>
+      <h3 class="posts-title">Posts</h3>
 
       <ul class="list-group">
         <% topic.posts.forEach((post)=>{ %>
           <li class="list-group-item">
-            <a href="/topics/<%= topic.id %>/posts/<%= post.id %>"><%= post.title %></a>
+            <a href="/topics/<%= topic.id %>/posts/<%= post.id %>" class="posts"><%= post.title %></a>
           </li>
         <% }) %>
       </ul>
